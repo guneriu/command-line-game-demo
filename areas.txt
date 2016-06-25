@@ -1,0 +1,4 @@
+#format id#name#stories#direction#connectedArea#direction#connectedArea#
+1#Entrance Area#1,2#SOUTH#Training Area
+2#Training Area#3,4#EAST#Bazaar Area
+3#Bazaar Area#5,6
