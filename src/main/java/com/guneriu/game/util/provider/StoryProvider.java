@@ -1,4 +1,4 @@
-package com.guneriu.game.provider;
+package com.guneriu.game.util.provider;
 
 import com.guneriu.game.model.Story;
 
@@ -20,7 +20,13 @@ public class StoryProvider {
 
     }
 
-    public static Story get(Integer id) {
+    public static Story get(String id) {
         return storyList.stream().filter(story -> story.getId().equals(id)).findFirst().get();
     }
+
+    public static List<Story> getAll() {
+        return storyList;
+    }
+
+
 }

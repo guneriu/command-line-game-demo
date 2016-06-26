@@ -1,4 +1,4 @@
-package com.guneriu.game.io;
+package com.guneriu.game.util.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 /**
  * 
- * Reader to read file with limiting capability
+ * Reader to read file
  *
  */
 public class LineReader implements ContentReader {

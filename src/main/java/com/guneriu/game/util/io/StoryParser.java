@@ -1,8 +1,8 @@
-package com.guneriu.game.io;
+package com.guneriu.game.util.io;
 
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
-import com.guneriu.game.provider.WeaponProvider;
+import com.guneriu.game.util.provider.WeaponProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +12,15 @@ import java.util.List;
  */
 public class StoryParser implements Parser<Story> {
     private List<Story> storyList = new ArrayList<>();
-    private String delimeter;
+    private String delimiter;
 
     /**
      * uses given delimiter to split line
      *
-     * @param delimeter
+     * @param delimiter
      */
-    public StoryParser(String delimeter) {
-        this.delimeter = delimeter;
+    public StoryParser(String delimiter) {
+        this.delimiter = delimiter;
     }
 
     /**
@@ -29,17 +29,16 @@ public class StoryParser implements Parser<Story> {
     @Override
     public void parseContent(List<String> lines) {
         for (String line : lines) {
-            String[] values = line.split(delimeter);
-            Integer storyId = Integer.parseInt(values[0]);
+            String[] values = line.split(delimiter);
+            String storyId = values[0];
             String storyText = values[1];
             Story story = new Story(storyId, storyText);
             story.setExperience(Integer.parseInt(values[2]));
             if (values.length > 3) {
                 for (int i = 3; i < values.length; i+=2) {
-                    Hero enemy = new Hero(values[i]);
-                    enemy.setHealth(Integer.parseInt(values[i + 1]));
+                    Hero enemy = new Hero(values[i], Integer.parseInt(values[i + 1]));
                     if (!values[i + 2].isEmpty()) {
-                        enemy.setWeapon(WeaponProvider.get(Integer.parseInt(values[i + 2])));
+                        enemy.setWeapon(WeaponProvider.get(values[i + 2]));
                         i++;
                     }
                     story.setEnemy(enemy);

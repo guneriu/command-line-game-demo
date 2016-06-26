@@ -9,13 +9,9 @@ import java.util.Map;
  * Created by ugur on 24.06.2016.
  */
 public class Area implements Description {
-    private Integer id;
-    private String name;
+    private String id;
 
-    Area(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    private final String name;
 
     private Map<Direction, Area> linkedAreas = new HashMap<>();
 
@@ -27,17 +23,11 @@ public class Area implements Description {
         this.name = name;
     }
 
-    public Area(String name, Map<Direction, Area> linkedAreas, List<Story> storyList) {
-        this(name);
-        this.linkedAreas = linkedAreas;
-        this.storyList = storyList;
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,28 +35,19 @@ public class Area implements Description {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public static AreaBuilder builder() {
-        return new AreaBuilder();
-    }
-
     public Map<Direction, Area> getLinkedAreas() {
         return linkedAreas;
-    }
-
-    public void setLinkedAreas(Map<Direction, Area> linkedAreas) {
-        this.linkedAreas = linkedAreas;
     }
 
     public List<Story> getStoryList() {
         return storyList;
     }
 
-    public void setStoryList(List<Story> storyList) {
-        this.storyList = storyList;
+    public void addStory(Story story) {
+        if (this.storyList == null) {
+            this.storyList = new ArrayList<>();
+        }
+        this.storyList.add(story);
     }
 
     public void connect(Area linkedArea, Direction direction) {
@@ -98,37 +79,5 @@ public class Area implements Description {
             return "";
         }
         return this.getLinkedAreas().entrySet().stream().map(entry -> entry.getKey().name() + " to " +  entry.getValue().getName() + " ").reduce(String::concat).get();
-    }
-
-    public static class AreaBuilder {
-        private String name;
-        private Map<Direction, Area> linkedAreas = new HashMap<>();
-        private List<Story> storyList;
-
-        AreaBuilder() {
-        }
-
-        public Area.AreaBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Area.AreaBuilder linkedAreas(Map<Direction, Area> linkedAreas) {
-            this.linkedAreas = linkedAreas;
-            return this;
-        }
-
-        public Area.AreaBuilder storyList(List<Story> storyList) {
-            this.storyList = storyList;
-            return this;
-        }
-
-        public Area build() {
-            return new Area(name, linkedAreas, storyList);
-        }
-
-        public String toString() {
-            return "com.guneriu.game.model.Area.AreaBuilder(name=" + this.name + ", linkedAreas=" + this.linkedAreas + ", storyList=" + this.storyList + ")";
-        }
     }
 }

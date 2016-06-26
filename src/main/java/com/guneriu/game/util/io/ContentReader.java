@@ -1,4 +1,4 @@
-package com.guneriu.game.io;
+package com.guneriu.game.util.io;
 
 import java.io.IOException;
 import java.util.List;

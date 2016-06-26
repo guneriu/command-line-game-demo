@@ -1,4 +1,4 @@
-package com.guneriu.game.io;
+package com.guneriu.game.util.io;
 
 /**
  * Created by ugur on 26.06.2016.

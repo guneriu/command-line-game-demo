@@ -1,7 +1,7 @@
 package com.guneriu.game.model;
 
-import com.guneriu.game.log.Logger;
-import com.guneriu.game.log.LoggerFactory;
+import com.guneriu.game.util.log.Logger;
+import com.guneriu.game.util.log.LoggerFactory;
 
 /**
  * Created by ugur on 22.06.2016.
@@ -22,29 +22,16 @@ public class Hero implements Description {
 
     private Area currentArea;
 
-    public Hero() {
+    public Hero(String name) {
         this.level = 1;
         this.health = 100;
         this.experience = 0;
-    }
-
-    public Hero(String name) {
-        this();
         this.name = name;
     }
 
     public Hero(String name, Integer health) {
         this(name);
         this.health = health;
-    }
-
-    public Hero(String name, Integer health, Weapon weapon) {
-        this(name, health);
-        this.weapon = weapon;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getName() {
@@ -55,16 +42,8 @@ public class Hero implements Description {
         return level;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
     public Integer getHealth() {
         return health;
-    }
-
-    public void setHealth(Integer health) {
-        this.health = health;
     }
 
     public Weapon getWeapon() {
@@ -100,7 +79,6 @@ public class Hero implements Description {
         if (this.experience >= 100) {
             this.level = this.experience / 100;
             this.experience = this.experience % 100;
-            logger.write("Your level is increased to " + this.level);
         }
     }
 

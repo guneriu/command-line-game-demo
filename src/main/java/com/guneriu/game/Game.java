@@ -1,14 +1,13 @@
 package com.guneriu.game;
 
-import com.guneriu.game.io.*;
-import com.guneriu.game.log.Logger;
-import com.guneriu.game.log.LoggerFactory;
+import com.guneriu.game.util.io.*;
+import com.guneriu.game.util.log.Logger;
+import com.guneriu.game.util.log.LoggerFactory;
 import com.guneriu.game.model.*;
-import com.guneriu.game.provider.AreaProvider;
-import com.guneriu.game.provider.StoryProvider;
-import com.guneriu.game.provider.WeaponProvider;
+import com.guneriu.game.util.provider.AreaProvider;
+import com.guneriu.game.util.provider.WeaponProvider;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,105 +15,48 @@ import java.util.Scanner;
  */
 public class Game {
 
-    public static final String APPENDIX = "-------- %s --------";
-    private static final String DELIMITER = "#";
-
     private static Logger logger = LoggerFactory.getLogger();
 
     public static void main(String[] args) {
 
-        loadGameContent();
-
-        Hero hero = createHero(AreaProvider.get(1));
+        GameContentLoader.loadGameContent();
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("what is your name warrior");
-        hero.setName(scanner.next());
-        System.out.println("choose yourself a weapon");
-        WeaponProvider.getAll().forEach(weapon -> System.out.println(weapon.getDescription()));
-        hero.setWeapon(WeaponProvider.get(scanner.nextInt()));
+        GameDataWriter gameDataWriter = new GameDataWriter();
 
-        doTasks(scanner, hero);
+        List<String> savedGames = gameDataWriter.getSavedGames();
 
-    }
+        Hero hero;
 
-    public static void loadGameContent() {
-        try {
-            ContentReader reader = new LineReader(Game.class.getResource("/content/weapons.txt").getFile());
-            Parser<Weapon> parser = new WeaponParser(DELIMITER);
-            parser.parseContent(reader.read());
-            WeaponProvider.load(parser.getContent());
-
-            reader = new LineReader(Game.class.getResource("/content/stories.txt").getFile());
-            Parser<Story> storyParser = new StoryParser(DELIMITER);
-            storyParser.parseContent(reader.read());
-            StoryProvider.load(storyParser.getContent());
-
-            reader = new LineReader(Game.class.getResource("/content/areas.txt").getFile());
-            Parser<Area> areaParser = new AreaParser(DELIMITER);
-            areaParser.parseContent(reader.read());
-            AreaProvider.load(areaParser.getContent());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void doTasks(Scanner scanner, Hero hero) {
-        Area currentArea = hero.getCurrentArea();
-        currentArea.getStoryList().stream().filter(story -> !story.isCompleted()).forEach(s -> {
-            logger.write(s.getDesc());
-            if (s.hasEnemy()) {
-                hero.fight(s.getEnemy());
-            }
-            s.setCompleted();
-            hero.experience(s.getExperience());
-            logger.write("You gained " + s.getExperience() + " experience, complete 100 to increase level");
-            logger.write("Your new stats, health: " + hero.getHealth() + " level: " + hero.getLevel() + " experience: " + hero.getExperience());
-        });
-
-        if (hero.getCurrentArea().isCompleted()) {
-            explore(scanner, hero);
+        if (savedGames.isEmpty()) {
+            hero = createHero(scanner);
         } else {
-            doTasks(scanner, hero);
-        }
-    }
+            logger.write("(New Game)");
+            logger.write("---- Saved Games ----");
+            savedGames.forEach(savedGameName -> logger.write("(" + savedGameName + ")"));
+            String choice = scanner.nextLine();
 
-    public static void explore(Scanner scanner, Hero hero) {
-
-//        if (hero.getCurrentArea().getLinkedAreas().values().stream().allMatch(Area::isCompleted)) {
-//            endGame();
-//        }
-
-        logger.write("you successfully completed the area.");
-        logger.write("Now you can explore new areas.");
-        logger.write("Where would you like to go");
-        logger.write(hero.getCurrentArea().getDescription());
-
-        String nextDirection = scanner.next();
-
-        Direction direction = Direction.fromName(nextDirection);
-
-        if (hero.getCurrentArea().isDirectionValid(direction)) {
-            hero.setCurrentArea(hero.getCurrentArea().getConnectedArea(direction));
+            if (choice.equalsIgnoreCase("New Game")) {
+                hero = createHero(scanner);
+            } else {
+                hero = gameDataWriter.loadSavedGame(choice);
+            }
         }
 
-        doTasks(scanner, hero);
+        GameEngine gameEngine = new GameEngine(scanner, hero);
+
+        gameEngine.doTasks();
     }
 
-    public static void endGame() {
-        logger.write("You finished the game");
-        System.exit(0);
-    }
-
-    private static Hero createHero(Area area) {
-        Hero hero = new Hero();
-        hero.setCurrentArea(area);
+    private static Hero createHero(Scanner scanner) {
+        logger.write("what is your name warrior");
+        Hero hero = new Hero(scanner.next());
+        hero.setCurrentArea(AreaProvider.get("1"));
+        logger.write("choose yourself a weapon");
+        WeaponProvider.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
+        hero.setWeapon(WeaponProvider.get(scanner.next()));
         return hero;
     }
 
-    public static String wrapTheOutput(String text) {
-        return String.format(APPENDIX, text);
-    }
 }

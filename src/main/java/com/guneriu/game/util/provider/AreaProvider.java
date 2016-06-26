@@ -1,4 +1,4 @@
-package com.guneriu.game.provider;
+package com.guneriu.game.util.provider;
 
 import com.guneriu.game.model.Area;
 
@@ -20,7 +20,7 @@ public class AreaProvider {
 
     }
 
-    public static Area get(Integer id) {
+    public static Area get(String id) {
         return areaList.stream().filter(area -> area.getId().equals(id)).findFirst().get();
     }
 }

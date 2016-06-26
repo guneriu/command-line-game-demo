@@ -8,56 +8,27 @@ import java.util.function.BiFunction;
  */
 public class Story {
 
-    private Integer id;
+    private final String id;
 
-    private String desc;
+    private final String desc;
 
     private boolean completed;
-
-    private BiFunction<Scanner, Hero, Hero> function;
 
     private Hero enemy;
 
     private Integer experience;
 
-    public Story(Integer id, String desc) {
+    public Story(String id, String desc) {
         this.id = id;
         this.desc = desc;
     }
 
-    public Story(String desc, BiFunction<Scanner, Hero, Hero> function, Integer experience) {
-        this.desc = desc;
-        this.function = function;
-        this.experience = experience;
-    }
-
-    public Story(String desc, BiFunction<Scanner, Hero, Hero> function, Integer experience, Hero enemy) {
-        this(desc, function, experience);
-        this.enemy = enemy;
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getDesc() {
         return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public BiFunction<Scanner, Hero, Hero> getFunction() {
-        return function;
-    }
-
-    public void setFunction(BiFunction<Scanner, Hero, Hero> function) {
-        this.function = function;
     }
 
     public Hero getEnemy() {

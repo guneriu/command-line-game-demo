@@ -1,8 +1,8 @@
-package com.guneriu.game.io;
+package com.guneriu.game.util.io;
 
 import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Direction;
-import com.guneriu.game.provider.StoryProvider;
+import com.guneriu.game.util.provider.StoryProvider;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,15 +15,15 @@ import java.util.stream.Stream;
  */
 public class AreaParser implements Parser<Area> {
     private List<Area> areaList = new ArrayList<>();
-    private String delimeter;
+    private String delimiter;
 
     /**
      * uses given delimiter to split line
      *
-     * @param delimeter
+     * @param delimiter
      */
-    public AreaParser(String delimeter) {
-        this.delimeter = delimeter;
+    public AreaParser(String delimiter) {
+        this.delimiter = delimiter;
     }
 
     /**
@@ -33,13 +33,12 @@ public class AreaParser implements Parser<Area> {
     public void parseContent(List<String> lines) {
         Map<String, Area> areaMap = new LinkedHashMap<>();
         for (String line : lines) {
-            String[] values = line.split(delimeter);
+            String[] values = line.split(delimiter);
 
-            Integer id = Integer.parseInt(values[0]);
             Area area = getOrCreate(areaMap, values[1]);
-            area.setId(id);
+            area.setId(values[0]);
 
-            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.getStoryList().add(StoryProvider.get(Integer.parseInt(storyId))));
+            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.addStory(StoryProvider.get(storyId)));
 
             if (values.length > 3) {
                 for (int i = 3; i < values.length; i+=2) {
