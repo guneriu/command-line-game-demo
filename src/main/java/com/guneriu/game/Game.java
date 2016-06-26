@@ -41,17 +41,17 @@ public class Game {
 
     public static void loadGameContent() {
         try {
-            ContentReader reader = new LineReader("/home/ugur/dev/projects/games/my-awesome-game/weapons.txt");
+            ContentReader reader = new LineReader(Game.class.getResource("/content/weapons.txt").getFile());
             Parser<Weapon> parser = new WeaponParser(DELIMITER);
             parser.parseContent(reader.read());
             WeaponProvider.load(parser.getContent());
 
-            reader = new LineReader("/home/ugur/dev/projects/games/my-awesome-game/stories.txt");
+            reader = new LineReader(Game.class.getResource("/content/stories.txt").getFile());
             Parser<Story> storyParser = new StoryParser(DELIMITER);
             storyParser.parseContent(reader.read());
             StoryProvider.load(storyParser.getContent());
 
-            reader = new LineReader("/home/ugur/dev/projects/games/my-awesome-game/areas.txt");
+            reader = new LineReader(Game.class.getResource("/content/areas.txt").getFile());
             Parser<Area> areaParser = new AreaParser(DELIMITER);
             areaParser.parseContent(reader.read());
             AreaProvider.load(areaParser.getContent());
