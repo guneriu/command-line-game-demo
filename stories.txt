@@ -1,0 +1,4 @@
+#format id#story text#experience#Enemy name#Enemy health#Enemy WeaponId
+1#Welcome the Assassin's Creed, you are legendary warrior. But you lost your powers, now you need to start from scratch to regain your powers#10
+2#Welcome to the training area, here you can practise with dummy targets.#10#Dummy Trainer#20#1
+3#Welcome to city centre, you need to follow your target without being detected. Oww you target detect you, now you need to fight.#20#Guard#40#2

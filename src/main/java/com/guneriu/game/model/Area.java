@@ -1,7 +1,6 @@
 package com.guneriu.game.model;
 
-import com.guneriu.game.story.Story;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,7 @@ import java.util.Map;
 /**
  * Created by ugur on 24.06.2016.
  */
-public class Area extends BaseEntity {
+public class Area implements Description {
     private Integer id;
     private String name;
 
@@ -20,7 +19,7 @@ public class Area extends BaseEntity {
 
     private Map<Direction, Area> linkedAreas = new HashMap<>();
 
-    private List<Story> storyList;
+    private List<Story> storyList = new ArrayList<>();
 
     private boolean completed;
 
@@ -32,6 +31,22 @@ public class Area extends BaseEntity {
         this(name);
         this.linkedAreas = linkedAreas;
         this.storyList = storyList;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public static AreaBuilder builder() {
@@ -73,7 +88,7 @@ public class Area extends BaseEntity {
 
     @Override
     public String getDescription() {
-        return "Area{ " + this.getName()
+        return "Area{ " + this.name
                 + " you can explore "
                 + getLinkedAreasDescription();
     }

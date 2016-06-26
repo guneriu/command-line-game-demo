@@ -1,8 +1,8 @@
 package com.guneriu.game.io;
 
-import com.guneriu.game.builder.Builder;
-import com.guneriu.game.builder.StoryBuilder;
-import com.guneriu.game.story.Story;
+import com.guneriu.game.model.Hero;
+import com.guneriu.game.model.Story;
+import com.guneriu.game.provider.WeaponProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class StoryParser implements Parser<Story> {
     private List<Story> storyList = new ArrayList<>();
-    private Builder<Story> storyBuilder = new StoryBuilder();
     private String delimeter;
 
     /**
@@ -31,7 +30,21 @@ public class StoryParser implements Parser<Story> {
     public void parseContent(List<String> lines) {
         for (String line : lines) {
             String[] values = line.split(delimeter);
-            Story story = storyBuilder.build(values);
+            Integer storyId = Integer.parseInt(values[0]);
+            String storyText = values[1];
+            Story story = new Story(storyId, storyText);
+            story.setExperience(Integer.parseInt(values[2]));
+            if (values.length > 3) {
+                for (int i = 3; i < values.length; i+=2) {
+                    Hero enemy = new Hero(values[i]);
+                    enemy.setHealth(Integer.parseInt(values[i + 1]));
+                    if (!values[i + 2].isEmpty()) {
+                        enemy.setWeapon(WeaponProvider.get(Integer.parseInt(values[i + 2])));
+                        i++;
+                    }
+                    story.setEnemy(enemy);
+                }
+            }
             storyList.add(story);
         }
     }

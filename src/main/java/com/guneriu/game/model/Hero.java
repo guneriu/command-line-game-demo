@@ -1,6 +1,5 @@
 package com.guneriu.game.model;
 
-import com.guneriu.game.model.old.OldWeapon;
 import com.guneriu.game.log.Logger;
 import com.guneriu.game.log.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class Hero implements Description {
 
     private Integer health;
 
-    private OldWeapon weapon;
+    private Weapon weapon;
 
     private Area currentArea;
 
@@ -39,7 +38,7 @@ public class Hero implements Description {
         this.health = health;
     }
 
-    public Hero(String name, Integer health, OldWeapon weapon) {
+    public Hero(String name, Integer health, Weapon weapon) {
         this(name, health);
         this.weapon = weapon;
     }
@@ -68,11 +67,11 @@ public class Hero implements Description {
         this.health = health;
     }
 
-    public OldWeapon getWeapon() {
+    public Weapon getWeapon() {
         return weapon;
     }
 
-    public void setWeapon(OldWeapon weapon) {
+    public void setWeapon(Weapon weapon) {
         this.weapon = weapon;
     }
 

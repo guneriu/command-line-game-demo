@@ -1,9 +1,6 @@
 package com.guneriu.game.io;
 
-import com.guneriu.game.builder.Builder;
-import com.guneriu.game.builder.WeaponBuilder;
 import com.guneriu.game.model.Weapon;
-import com.guneriu.game.model.old.OldWeapon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,6 @@ import java.util.List;
  */
 public class WeaponParser implements Parser<Weapon> {
     private List<Weapon> weaponList = new ArrayList<>();
-    private Builder<Weapon> weaponBuilder = new WeaponBuilder();
     private String delimeter;
 
     /**
@@ -32,8 +28,12 @@ public class WeaponParser implements Parser<Weapon> {
     public void parseContent(List<String> lines) {
         for (String line : lines) {
             String[] values = line.split(delimeter);
-            Weapon weapon = weaponBuilder.build(values);
-            weaponList.add(weapon);
+            Integer id = Integer.parseInt(values[0]);
+            String name = values[1];
+            Integer damage = Integer.parseInt(values[2]);
+            Integer level = Integer.parseInt(values[3]);
+            Integer price = Integer.parseInt(values[4]);
+            weaponList.add(new Weapon(id, name, damage, level, price));
         }
     }
 

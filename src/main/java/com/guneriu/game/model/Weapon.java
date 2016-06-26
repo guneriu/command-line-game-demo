@@ -9,7 +9,8 @@ public class Weapon extends BaseEntity {
     private Integer price;
 
     public Weapon(Integer id, String name, Integer damage, Integer level, Integer price) {
-        super(id, name);
+        this.id = id;
+        this.name = name;
         this.damage = damage;
         this.level = level;
         this.price = price;
@@ -52,7 +53,7 @@ public class Weapon extends BaseEntity {
     @Override
     public String getDescription() {
         return "{" +
-                "(" + this.getId() + ")" +
+                "(" + this.id + ")" +
                 ", name='" + this.getName() + '\'' +
                 ", damage=" + damage +
                 ", level=" + level +

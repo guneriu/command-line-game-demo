@@ -1,6 +1,4 @@
-package com.guneriu.game.story;
-
-import com.guneriu.game.model.Hero;
+package com.guneriu.game.model;
 
 import java.util.Scanner;
 import java.util.function.BiFunction;
