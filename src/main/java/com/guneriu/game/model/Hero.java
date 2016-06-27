@@ -81,7 +81,7 @@ public class Hero implements Description {
     public void experience(Integer experience) {
         this.experience += experience;
         if (this.experience >= MAX_EXPERIENCE) {
-            this.level = this.experience / MAX_EXPERIENCE + 1;
+            this.level += this.experience / MAX_EXPERIENCE;
             this.experience = this.experience % MAX_EXPERIENCE;
         }
     }

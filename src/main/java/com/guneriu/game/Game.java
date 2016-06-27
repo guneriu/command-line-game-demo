@@ -13,7 +13,7 @@ import java.util.Scanner;
  * Created by ugur on 23.06.2016.
  */
 public class Game {
-    
+
     public static void main(String[] args) {
 
         WeaponService weaponService = new WeaponServiceImpl();

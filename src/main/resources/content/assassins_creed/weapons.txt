@@ -1,3 +1,5 @@
 #format id#name#damage#level
-1#Sword#20#1
-2#Arrow#20#1
+1#Fist#5#1
+2#Sword#10#2
+3#Arrow#10#2
+4#Hidden Blade#20#3

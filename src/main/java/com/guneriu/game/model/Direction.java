@@ -1,5 +1,6 @@
 package com.guneriu.game.model;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -20,9 +21,9 @@ public enum Direction {
         return name;
     }
 
-    public static Direction fromName(String name) {
+    public static Optional<Direction> fromName(String name) {
         if (name != null && !name.isEmpty()) {
-            return Stream.of(Direction.values()).filter(d -> d.getName().equalsIgnoreCase(name)).findFirst().get();
+            return Stream.of(Direction.values()).filter(d -> d.getName().equalsIgnoreCase(name)).findFirst();
         }
 
         return null;

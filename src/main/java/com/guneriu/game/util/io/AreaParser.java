@@ -45,7 +45,7 @@ public class AreaParser implements Parser<Area> {
 
             if (areaData.length > 3) {
                 for (int i = 3; i < areaData.length; i+=2) {
-                    Direction direction = Direction.fromName(areaData[i]);
+                    Direction direction = Direction.fromName(areaData[i]).get();
                     Area linkedArea = getOrCreate(areaMap, areaData[i + 1]);
                     area.connect(linkedArea, direction);
                 }

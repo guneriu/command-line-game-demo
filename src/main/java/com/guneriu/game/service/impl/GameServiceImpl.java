@@ -80,10 +80,13 @@ public class GameServiceImpl implements GameService {
 
         String nextDirection = scanner.next();
 
-        Direction direction = Direction.fromName(nextDirection);
+        Optional<Direction> direction = Direction.fromName(nextDirection);
 
-        if (hero.getCurrentArea().isDirectionValid(direction)) {
-            hero.setCurrentArea(hero.getCurrentArea().getConnectedArea(direction));
+        if (!direction.isPresent()) {
+            explore();
+        }
+        if (hero.getCurrentArea().isDirectionValid(direction.get())) {
+            hero.setCurrentArea(hero.getCurrentArea().getConnectedArea(direction.get()));
         }
 
         executeStories();
