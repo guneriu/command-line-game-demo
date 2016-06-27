@@ -2,33 +2,18 @@ package com.guneriu.game.service;
 
 import com.guneriu.game.model.Story;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service class for accessing {@link Story} objects
- *
- * Created by ugur on 26.06.2016.
+ * Created by ugur on 27.06.2016.
  */
-public class StoryService {
+public interface StoryService {
 
-    private static List<Story> storyList = new ArrayList<>();
+    void load(List<Story> stories);
 
-    private StoryService() {}
+    Story get(String id);
 
+    List<Story> getAll();
 
-    public static void load(List<Story> stories) {
-        storyList.addAll(stories);
-
-    }
-
-    public static Story get(String id) {
-        return storyList.stream().filter(story -> story.getId().equals(id)).findFirst().get();
-    }
-
-    public static List<Story> getAll() {
-        return storyList;
-    }
-
-
+    boolean isAllCompleted();
 }

@@ -3,6 +3,7 @@ package com.guneriu.game.util.io;
 import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Direction;
 import com.guneriu.game.service.StoryService;
+import com.guneriu.game.service.impl.StoryServiceImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,13 +19,15 @@ import java.util.stream.Stream;
 public class AreaParser implements Parser<Area> {
     private List<Area> areaList = new ArrayList<>();
     private String delimiter;
+    private final StoryService storyService;
 
     /**
      * uses given delimiter to split line
      *
      * @param delimiter
      */
-    public AreaParser(String delimiter) {
+    public AreaParser(StoryService storyService, String delimiter) {
+        this.storyService = storyService;
         this.delimiter = delimiter;
     }
 
@@ -40,7 +43,7 @@ public class AreaParser implements Parser<Area> {
             Area area = getOrCreate(areaMap, values[1]);
             area.setId(values[0]);
 
-            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.addStory(StoryService.get(storyId)));
+            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.addStory(storyService.get(storyId)));
 
             if (values.length > 3) {
                 for (int i = 3; i < values.length; i+=2) {

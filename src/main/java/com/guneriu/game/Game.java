@@ -1,12 +1,12 @@
 package com.guneriu.game;
 
-import com.guneriu.game.service.GameService;
-import com.guneriu.game.util.io.*;
+import com.guneriu.game.service.AreaService;
+import com.guneriu.game.service.StoryService;
+import com.guneriu.game.service.WeaponService;
+import com.guneriu.game.service.impl.*;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
 import com.guneriu.game.model.*;
-import com.guneriu.game.service.AreaService;
-import com.guneriu.game.service.WeaponService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -20,18 +20,20 @@ public class Game {
 
     public static void main(String[] args) {
 
-        GameContentService.loadGameContent();
+        WeaponService weaponService = new WeaponServiceImpl();
+        StoryService storyService = new StoryServiceImpl();
+        AreaService areaService = new AreaServiceImpl();
+        GameContentServiceImpl gameContentService = new GameContentServiceImpl(storyService, weaponService, areaService);
+        gameContentService.loadGameContent();
 
         Scanner scanner = new Scanner(System.in);
 
-        GameDataWriter gameDataWriter = new GameDataWriter();
-
-        List<String> savedGames = gameDataWriter.getSavedGames();
+        List<String> savedGames = gameContentService.getSavedGames();
 
         Hero hero;
 
         if (savedGames.isEmpty()) {
-            hero = createHero(scanner);
+            hero = createHero(scanner, areaService, weaponService);
         } else {
             logger.write("(New Game)");
             logger.write("---- Saved Games ----");
@@ -39,24 +41,24 @@ public class Game {
             String choice = scanner.nextLine();
 
             if (choice.equalsIgnoreCase("New Game")) {
-                hero = createHero(scanner);
+                hero = createHero(scanner, areaService, weaponService);
             } else {
-                hero = gameDataWriter.loadSavedGame(choice);
+                hero = gameContentService.loadSavedGame(choice);
             }
         }
 
-        GameService gameService = new GameService(scanner, hero);
+        GameServiceImpl gameService = new GameServiceImpl(scanner, hero, gameContentService, storyService, weaponService);
 
         gameService.executeStories();
     }
 
-    private static Hero createHero(Scanner scanner) {
+    private static Hero createHero(Scanner scanner, AreaService areaService, WeaponService weaponService) {
         logger.write("what is your name warrior");
         Hero hero = new Hero(scanner.next());
-        hero.setCurrentArea(AreaService.get("1"));
+        hero.setCurrentArea(areaService.get("1"));
         logger.write("choose yourself a weapon");
-        WeaponService.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
-        hero.setWeapon(WeaponService.get(scanner.next()));
+        weaponService.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
+        hero.setWeapon(weaponService.get(scanner.next()));
         return hero;
     }
 

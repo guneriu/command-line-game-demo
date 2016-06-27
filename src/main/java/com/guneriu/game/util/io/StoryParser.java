@@ -3,6 +3,7 @@ package com.guneriu.game.util.io;
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
 import com.guneriu.game.service.WeaponService;
+import com.guneriu.game.service.impl.WeaponServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,16 @@ public class StoryParser implements Parser<Story> {
     private List<Story> storyList = new ArrayList<>();
     private String delimiter;
 
+    private final WeaponService weaponService;
+
     /**
      * uses given delimiter to split line
      *
      * @param delimiter
      */
-    public StoryParser(String delimiter) {
+    public StoryParser(WeaponService weaponService, String delimiter) {
         this.delimiter = delimiter;
+        this.weaponService = weaponService;
     }
 
     /**
@@ -40,7 +44,7 @@ public class StoryParser implements Parser<Story> {
                 for (int i = 3; i < values.length; i+=2) {
                     Hero enemy = new Hero(values[i], Integer.parseInt(values[i + 1]));
                     if (!values[i + 2].isEmpty()) {
-                        enemy.setWeapon(WeaponService.get(values[i + 2]));
+                        enemy.setWeapon(weaponService.get(values[i + 2]));
                         i++;
                     }
                     story.setEnemy(enemy);
