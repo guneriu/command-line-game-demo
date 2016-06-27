@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface StoryService {
 
-    void load(List<Story> stories);
+    void add(List<Story> stories);
 
     Story get(String id);
 

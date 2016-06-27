@@ -3,7 +3,6 @@ package com.guneriu.game.util.io;
 import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Direction;
 import com.guneriu.game.service.StoryService;
-import com.guneriu.game.service.impl.StoryServiceImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,7 +16,6 @@ import java.util.stream.Stream;
  * Created by ugur on 25.06.2016.
  */
 public class AreaParser implements Parser<Area> {
-    private List<Area> areaList = new ArrayList<>();
     private String delimiter;
     private final StoryService storyService;
 
@@ -35,31 +33,26 @@ public class AreaParser implements Parser<Area> {
      * uses {@link List<String>} and parses {@link Area} objects
      */
     @Override
-    public void parseContent(List<String> lines) {
+    public List<Area> parseContent(List<String> lines) {
         Map<String, Area> areaMap = new LinkedHashMap<>();
         for (String line : lines) {
-            String[] values = line.split(delimiter);
+            String[] areaData = line.split(delimiter);
 
-            Area area = getOrCreate(areaMap, values[1]);
-            area.setId(values[0]);
+            Area area = getOrCreate(areaMap, areaData[1]);
+            area.setId(areaData[0]);
 
-            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.addStory(storyService.get(storyId)));
+            Stream.of(areaData[2].split(",")).forEachOrdered(storyId -> area.addStory(storyService.get(storyId)));
 
-            if (values.length > 3) {
-                for (int i = 3; i < values.length; i+=2) {
-                    Direction direction = Direction.fromName(values[i]);
-                    Area linkedArea = getOrCreate(areaMap, values[i + 1]);
+            if (areaData.length > 3) {
+                for (int i = 3; i < areaData.length; i+=2) {
+                    Direction direction = Direction.fromName(areaData[i]);
+                    Area linkedArea = getOrCreate(areaMap, areaData[i + 1]);
                     area.connect(linkedArea, direction);
                 }
             }
         }
 
-        areaList.addAll(areaMap.values());
-    }
-
-    @Override
-    public List<Area> getContent() {
-        return areaList;
+        return new ArrayList<>(areaMap.values());
     }
 
     private Area getOrCreate(Map<String, Area> areaMap, String name) {

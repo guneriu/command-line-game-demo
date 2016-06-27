@@ -5,6 +5,7 @@ import com.guneriu.game.service.AreaService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service class for accessing {@link Area} objects
@@ -17,12 +18,12 @@ public class AreaServiceImpl implements AreaService {
 
 
     @Override
-    public void load(List<Area> areas) {
+    public void add(List<Area> areas) {
         areaList.addAll(areas);
     }
 
     @Override
-    public Area get(String id) {
-        return areaList.stream().filter(area -> area.getId().equals(id)).findFirst().get();
+    public Optional<Area> get(String id) {
+        return areaList.stream().filter(area -> area.getId().equals(id)).findFirst();
     }
 }

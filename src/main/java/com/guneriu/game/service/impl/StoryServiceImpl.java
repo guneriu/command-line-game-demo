@@ -16,7 +16,7 @@ public class StoryServiceImpl implements StoryService {
     private static List<Story> storyList = new ArrayList<>();
 
     @Override
-    public void load(List<Story> stories) {
+    public void add(List<Story> stories) {
         storyList.addAll(stories);
 
     }

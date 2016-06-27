@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,15 +64,14 @@ public class GameContentServiceImpl implements GameContentService {
     }
 
     @Override
-    public Hero loadSavedGame(String name) {
+    public Optional<Hero> getSavedGame(String name) {
         Hero hero = null;
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(SAVE_DIRECTORY, name), CHARSET_UTF8)) {
             String[] heroData = reader.readLine().split("#");
             hero = new Hero(name, Integer.parseInt(heroData[0]));
             hero.experience(Integer.parseInt(heroData[1]) * 100 + Integer.parseInt(heroData[2]));
-            hero.setCurrentArea(areaService.get(heroData[3]));
-            hero.setWeapon(weaponService.get(heroData[4]));
-
+            hero.setCurrentArea(areaService.get(heroData[3]).get());
+            hero.setWeapon(weaponService.get(heroData[4]).get());
 
             while (reader.ready()) {
                 String[] storyData = reader.readLine().split("#");
@@ -84,10 +84,10 @@ public class GameContentServiceImpl implements GameContentService {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.write("Could not add the game.");
         }
 
-        return hero;
+        return Optional.ofNullable(hero);
     }
 
     @Override
@@ -109,14 +109,12 @@ public class GameContentServiceImpl implements GameContentService {
                         bufferedWriter.write(story.getId() + "#" + story.isCompleted());
                         bufferedWriter.newLine();
                     } catch (IOException e) {
-                        e.printStackTrace();
                         logger.write("could not save the game");
                         System.exit(-1);
                     }
                 });
             }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.write("could not save the game");
             System.exit(-1);
         }
@@ -128,21 +126,19 @@ public class GameContentServiceImpl implements GameContentService {
         try {
             ContentReader reader = new LineReader(Game.class.getResource(CONTENT_FOLDER + "weapons.txt").getFile());
             Parser<Weapon> parser = new WeaponParser(DELIMITER);
-            parser.parseContent(reader.read());
-            weaponService.load(parser.getContent());
+            weaponService.add(parser.parseContent(reader.read()));
 
             reader = new LineReader(Game.class.getResource(CONTENT_FOLDER + "stories.txt").getFile());
             Parser<Story> storyParser = new StoryParser(weaponService, DELIMITER);
-            storyParser.parseContent(reader.read());
-            storyService.load(storyParser.getContent());
+            storyService.add(storyParser.parseContent(reader.read()));
 
             reader = new LineReader(Game.class.getResource(CONTENT_FOLDER + "areas.txt").getFile());
             Parser<Area> areaParser = new AreaParser(storyService, DELIMITER);
-            areaParser.parseContent(reader.read());
-            areaService.load(areaParser.getContent());
+            areaService.add(areaParser.parseContent(reader.read()));
 
         } catch (IOException e) {
-            e.printStackTrace();
+           logger.write("Could not add game content");
+            System.exit(-1);
         }
     }
 }

@@ -1,10 +1,16 @@
 package com.guneriu.game.service.impl;
 
-import com.guneriu.game.model.*;
+import com.guneriu.game.model.Area;
+import com.guneriu.game.model.Direction;
+import com.guneriu.game.model.Hero;
+import com.guneriu.game.model.Weapon;
 import com.guneriu.game.service.*;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -19,7 +25,7 @@ public class GameServiceImpl implements GameService {
 
     private final Scanner scanner;
 
-    private final Hero hero;
+    private Hero hero;
 
     private final GameContentService gameContentService;
 
@@ -27,16 +33,19 @@ public class GameServiceImpl implements GameService {
 
     private final WeaponService weaponService;
 
-    public GameServiceImpl(Scanner scanner, Hero hero, GameContentService gameContentService, StoryService storyService, WeaponService weaponService) {
+    private AreaService areaService;
+
+    public GameServiceImpl(Scanner scanner, GameContentService gameContentService, StoryService storyService, WeaponService weaponService, AreaService areaService) {
         this.scanner = scanner;
-        this.hero = hero;
         this.gameContentService = gameContentService;
         this.storyService = storyService;
         this.weaponService = weaponService;
+        this.areaService = areaService;
     }
 
     @Override
     public void executeStories() {
+        Objects.requireNonNull(hero, "Please call startGame to setup hero");
         Area currentArea = hero.getCurrentArea();
         currentArea.getStoryList().stream().filter(story -> !story.isCompleted()).forEach(s -> {
             logger.write(s.getDesc());
@@ -59,7 +68,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void explore() {
-
+        Objects.requireNonNull(hero, "Please call startGame to setup hero");
         if (storyService.isAllCompleted()) {
             endGame();
         }
@@ -81,7 +90,39 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public void startGame() {
+        gameContentService.loadGameContent();
+        List<String> savedGames = gameContentService.getSavedGames();
+        if (savedGames.isEmpty()) {
+            hero = createHero();
+        } else {
+            hero = showGameMenu(savedGames);
+        }
+
+        this.executeStories();
+    }
+
+    private Hero showGameMenu(List<String> savedGames) {
+        logger.write("(New Game)");
+        logger.write("---- Saved Games ----");
+        savedGames.forEach(savedGameName -> logger.write("(" + savedGameName + ")"));
+        String choice = scanner.nextLine();
+        if (choice.equalsIgnoreCase("New Game")) {
+            hero = createHero();
+        } else {
+            Optional<Hero> optionalHero = gameContentService.getSavedGame(choice);
+            if (optionalHero.isPresent()) {
+                hero = optionalHero.get();
+            }
+            hero = showGameMenu(savedGames);
+        }
+
+        return hero;
+    }
+
+    @Override
     public void showMenu() {
+        Objects.requireNonNull(hero, "Please call startGame to setup hero");
         logger.write("(1) Hero Stats");
         logger.write("(2) Inventory");
         logger.write("(3) Continue to stories");
@@ -98,10 +139,31 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private void showInventory() {
-        logger.write("Weapons you can choose: ");
+    private Hero createHero() {
+        Hero hero = setupName();
+        hero.setCurrentArea(areaService.get("1").get());
+        setupWeapon(hero);
+        return hero;
+    }
+
+    private void setupWeapon(Hero hero) {
+        logger.write("choose yourself a weapon");
         weaponService.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
-        hero.setWeapon(weaponService.get(scanner.next()));
+        Optional<Weapon> weapon = weaponService.get(scanner.next());
+        if (weapon.isPresent()) {
+            hero.setWeapon(weapon.get());
+        } else {
+            setupWeapon(hero);
+        }
+    }
+
+    private Hero setupName() {
+        logger.write("what is your name warrior");
+        return new Hero(scanner.next());
+    }
+
+    private void showInventory() {
+        setupWeapon(hero);
         showMenu();
     }
 
@@ -112,9 +174,9 @@ public class GameServiceImpl implements GameService {
     }
 
     private void exit() {
-        logger.write("Are you sure the exit the game y/n?");
+        logger.write("Are you sure the exit the game yes/no?");
         String next = scanner.next();
-        if (next.equals("n")) {
+        if (!next.equalsIgnoreCase("yes")) {
             showMenu();
         }
 

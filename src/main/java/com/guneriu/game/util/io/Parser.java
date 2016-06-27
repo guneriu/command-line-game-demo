@@ -14,13 +14,9 @@ public interface Parser<T> {
      * uses {@link List<String>} and parses List of T
      *
      * @param lines content to be parsed
+     * @return parsed List of T
      */
-    public void parseContent(List<String> lines);
+    List<T> parseContent(List<String> lines);
 
-    /**
-     *
-     * @return parsed object of T
-     */
-    public List<T> getContent();
 
 }

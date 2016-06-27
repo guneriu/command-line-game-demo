@@ -5,6 +5,7 @@ import com.guneriu.game.service.WeaponService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -17,19 +18,14 @@ public class WeaponServiceImpl implements WeaponService {
     private static List<Weapon> weaponList = new ArrayList<>();
 
     @Override
-    public void load(List<Weapon> weapons) {
+    public void add(List<Weapon> weapons) {
         weaponList.addAll(weapons);
 
     }
 
     @Override
-    public Weapon get(String id) {
-        return weaponList.stream().filter(weapon -> weapon.getId().equals(id)).findFirst().get();
-    }
-
-    @Override
-    public List<Weapon> getAll() {
-        return weaponList;
+    public Optional<Weapon> get(String id) {
+        return weaponList.stream().filter(weapon -> weapon.getId().equals(id)).findFirst();
     }
 
     @Override

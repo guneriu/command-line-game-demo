@@ -8,5 +8,7 @@ public interface GameService {
 
     void explore();
 
+    void startGame();
+
     void showMenu();
 }

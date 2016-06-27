@@ -3,7 +3,6 @@ package com.guneriu.game.util.io;
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
 import com.guneriu.game.service.WeaponService;
-import com.guneriu.game.service.impl.WeaponServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
  * Created by ugur on 25.06.2016.
  */
 public class StoryParser implements Parser<Story> {
-    private List<Story> storyList = new ArrayList<>();
     private String delimiter;
 
     private final WeaponService weaponService;
@@ -33,18 +31,19 @@ public class StoryParser implements Parser<Story> {
      * uses {@link List<String>} and parses {@link Story} objects
      */
     @Override
-    public void parseContent(List<String> lines) {
+    public List<Story> parseContent(List<String> lines) {
+        List<Story> storyList = new ArrayList<>();
         for (String line : lines) {
-            String[] values = line.split(delimiter);
-            String storyId = values[0];
-            String storyText = values[1];
+            String[] storyData = line.split(delimiter);
+            String storyId = storyData[0];
+            String storyText = storyData[1];
             Story story = new Story(storyId, storyText);
-            story.setExperience(Integer.parseInt(values[2]));
-            if (values.length > 3) {
-                for (int i = 3; i < values.length; i+=2) {
-                    Hero enemy = new Hero(values[i], Integer.parseInt(values[i + 1]));
-                    if (!values[i + 2].isEmpty()) {
-                        enemy.setWeapon(weaponService.get(values[i + 2]));
+            story.setExperience(Integer.parseInt(storyData[2]));
+            if (storyData.length > 3) {
+                for (int i = 3; i < storyData.length; i+=2) {
+                    Hero enemy = new Hero(storyData[i], Integer.parseInt(storyData[i + 1]));
+                    if (!storyData[i + 2].isEmpty()) {
+                        enemy.setWeapon(weaponService.get(storyData[i + 2]).get());
                         i++;
                     }
                     story.setEnemy(enemy);
@@ -52,10 +51,7 @@ public class StoryParser implements Parser<Story> {
             }
             storyList.add(story);
         }
-    }
 
-    @Override
-    public List<Story> getContent() {
         return storyList;
     }
 
