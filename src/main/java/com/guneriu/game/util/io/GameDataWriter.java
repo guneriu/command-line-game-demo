@@ -1,13 +1,12 @@
-package com.guneriu.game;
+package com.guneriu.game.util.io;
 
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
-import com.guneriu.game.util.io.GameContentLoader;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
-import com.guneriu.game.util.provider.AreaProvider;
-import com.guneriu.game.util.provider.StoryProvider;
-import com.guneriu.game.util.provider.WeaponProvider;
+import com.guneriu.game.service.AreaService;
+import com.guneriu.game.service.StoryService;
+import com.guneriu.game.service.WeaponService;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -46,13 +45,13 @@ public class GameDataWriter {
             String[] heroData = reader.readLine().split("#");
             hero = new Hero(name, Integer.parseInt(heroData[0]));
             hero.experience(Integer.parseInt(heroData[1]) * 100 + Integer.parseInt(heroData[2]));
-            hero.setCurrentArea(AreaProvider.get(heroData[3]));
-            hero.setWeapon(WeaponProvider.get(heroData[4]));
+            hero.setCurrentArea(AreaService.get(heroData[3]));
+            hero.setWeapon(WeaponService.get(heroData[4]));
 
 
             while (reader.ready()) {
                 String[] storyData = reader.readLine().split("#");
-                Story story = StoryProvider.get(storyData[0]);
+                Story story = StoryService.get(storyData[0]);
                 Boolean completed = Boolean.valueOf(storyData[1]);
                 if (completed) {
                     story.setCompleted();
@@ -80,7 +79,7 @@ public class GameDataWriter {
                         + "#" + hero.getWeapon().getId());
                 bufferedWriter.newLine();
 
-                StoryProvider.getAll().forEach(story -> {
+                StoryService.getAll().forEach(story -> {
                     try {
                         bufferedWriter.write(story.getId() + "#" + story.isCompleted());
                         bufferedWriter.newLine();

@@ -1,4 +1,4 @@
-package com.guneriu.game.util.provider;
+package com.guneriu.game.service;
 
 import com.guneriu.game.model.Area;
 
@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Service class for accessing {@link Area} objects
+ *
  * Created by ugur on 26.06.2016.
  */
-public class AreaProvider {
+public class AreaService {
 
     private static List<Area> areaList = new ArrayList<>();
 
-    private AreaProvider() {}
+    private AreaService() {}
 
 
     public static void load(List<Area> areas) {

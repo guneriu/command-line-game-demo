@@ -4,10 +4,14 @@ import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
 
 /**
+ *
+ * Playable character in the game
+ *
  * Created by ugur on 22.06.2016.
  */
 public class Hero implements Description {
 
+    private static final int MAX_EXPERIENCE = 100;
     private static Logger logger = LoggerFactory.getLogger();
 
     private String name;
@@ -76,9 +80,9 @@ public class Hero implements Description {
 
     public void experience(Integer experience) {
         this.experience += experience;
-        if (this.experience >= 100) {
-            this.level = this.experience / 100;
-            this.experience = this.experience % 100;
+        if (this.experience >= MAX_EXPERIENCE) {
+            this.level = this.experience / MAX_EXPERIENCE + 1;
+            this.experience = this.experience % MAX_EXPERIENCE;
         }
     }
 
@@ -122,6 +126,7 @@ public class Hero implements Description {
                 (weapon != null ? ", weapon=" + weapon.getDescription() : "")
                 + ", level=" + level
                 + ", health=" + health
+                + ", experience=" + experience
                 + (currentArea != null ? ", at " + currentArea.getDescription() : "")
                 + '}';
     }

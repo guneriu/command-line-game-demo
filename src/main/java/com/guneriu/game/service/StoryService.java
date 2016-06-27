@@ -1,4 +1,4 @@
-package com.guneriu.game.util.provider;
+package com.guneriu.game.service;
 
 import com.guneriu.game.model.Story;
 
@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Service class for accessing {@link Story} objects
+ *
  * Created by ugur on 26.06.2016.
  */
-public class StoryProvider {
+public class StoryService {
 
     private static List<Story> storyList = new ArrayList<>();
 
-    private StoryProvider() {}
+    private StoryService() {}
 
 
     public static void load(List<Story> stories) {

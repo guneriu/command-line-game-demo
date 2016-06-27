@@ -2,7 +2,7 @@ package com.guneriu.game.util.io;
 
 import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Direction;
-import com.guneriu.game.util.provider.StoryProvider;
+import com.guneriu.game.service.StoryService;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -11,7 +11,9 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * Parse List of String and creates {@code Order} and {@code Customer} lists
+ * Parse List of String and creates {@link Area} lists
+ *
+ * Created by ugur on 25.06.2016.
  */
 public class AreaParser implements Parser<Area> {
     private List<Area> areaList = new ArrayList<>();
@@ -27,7 +29,7 @@ public class AreaParser implements Parser<Area> {
     }
 
     /**
-     * uses {@code List<String>} and parses {@code Customer} and {@code Order} objects
+     * uses {@link List<String>} and parses {@link Area} objects
      */
     @Override
     public void parseContent(List<String> lines) {
@@ -38,7 +40,7 @@ public class AreaParser implements Parser<Area> {
             Area area = getOrCreate(areaMap, values[1]);
             area.setId(values[0]);
 
-            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.addStory(StoryProvider.get(storyId)));
+            Stream.of(values[2].split(",")).forEachOrdered(storyId -> area.addStory(StoryService.get(storyId)));
 
             if (values.length > 3) {
                 for (int i = 3; i < values.length; i+=2) {

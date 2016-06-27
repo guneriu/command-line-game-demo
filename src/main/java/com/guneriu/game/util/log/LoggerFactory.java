@@ -1,6 +1,9 @@
 package com.guneriu.game.util.log;
 
 /**
+ * Static class for accessing Logger instance
+ * uses {@link LoggingStrategy} instance to enable logging strategy
+ *
  * Created by ugur on 25.06.2016.
  */
 public class LoggerFactory {

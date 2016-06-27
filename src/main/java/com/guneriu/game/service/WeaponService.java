@@ -1,4 +1,4 @@
-package com.guneriu.game.util.provider;
+package com.guneriu.game.service;
 
 import com.guneriu.game.model.Weapon;
 
@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Service class for accessing {@link Weapon} objects
+ *
  * Created by ugur on 26.06.2016.
  */
-public class WeaponProvider {
+public class WeaponService {
 
     private static List<Weapon> weaponList = new ArrayList<>();
 
-    private WeaponProvider() {
+    private WeaponService() {
     }
 
 

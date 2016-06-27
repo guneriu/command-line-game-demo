@@ -1,35 +1,23 @@
-package com.guneriu.game;
+package com.guneriu.game.service;
 
 import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Direction;
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
-import com.guneriu.game.util.io.GameContentLoader;
+import com.guneriu.game.util.io.GameDataWriter;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
-import com.guneriu.game.util.provider.AreaProvider;
-import com.guneriu.game.util.provider.StoryProvider;
-import com.guneriu.game.util.provider.WeaponProvider;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
+ *
+ * GameService class manages tasks like showing menu, executing tasks and exploring
+ *
  * Created by ugur on 26.06.2016.
  */
-public class GameEngine {
+public class GameService {
 
     private static final String SAVE_DIRECTORY = System.getProperty("user.home") + "/games/";
     private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
@@ -41,7 +29,7 @@ public class GameEngine {
 
     private GameDataWriter gameDataWriter;
 
-    public GameEngine(Scanner scanner, Hero hero) {
+    public GameService(Scanner scanner, Hero hero) {
         this.scanner = scanner;
         this.hero = hero;
         this.gameDataWriter = new GameDataWriter();
@@ -58,7 +46,7 @@ public class GameEngine {
         switch (choice) {
             case "1": stats(); break;
             case "2": inventory(); break;
-            case "3": doTasks(); break;
+            case "3": executeStories(); break;
             case "4": exit(); break;
             default: logger.write("What?"); menu();
         }
@@ -66,8 +54,8 @@ public class GameEngine {
 
     private void inventory() {
         logger.write("Weapons you can choose: ");
-        WeaponProvider.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
-        hero.setWeapon(WeaponProvider.get(scanner.next()));
+        WeaponService.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
+        hero.setWeapon(WeaponService.get(scanner.next()));
         menu();
     }
 
@@ -93,7 +81,7 @@ public class GameEngine {
 
     }
 
-    public void doTasks() {
+    public void executeStories() {
         Area currentArea = hero.getCurrentArea();
         currentArea.getStoryList().stream().filter(story -> !story.isCompleted()).forEach(s -> {
             logger.write(s.getDesc());
@@ -110,13 +98,13 @@ public class GameEngine {
         if (hero.getCurrentArea().isCompleted()) {
             explore();
         } else {
-            doTasks();
+            executeStories();
         }
     }
 
     public void explore() {
 
-        if (StoryProvider.getAll().stream().allMatch(Story::isCompleted)) {
+        if (StoryService.getAll().stream().allMatch(Story::isCompleted)) {
             endGame();
         }
 
@@ -133,7 +121,7 @@ public class GameEngine {
             hero.setCurrentArea(hero.getCurrentArea().getConnectedArea(direction));
         }
 
-        doTasks();
+        executeStories();
     }
 
     public void endGame() {

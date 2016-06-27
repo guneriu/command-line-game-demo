@@ -3,6 +3,8 @@ package com.guneriu.game.model;
 import java.util.stream.Stream;
 
 /**
+ * Directions allowed to explore in the game
+ *
  * Created by ugur on 25.06.2016.
  */
 public enum Direction {

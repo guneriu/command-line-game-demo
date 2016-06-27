@@ -1,9 +1,9 @@
 package com.guneriu.game.model;
 
-import java.util.Scanner;
-import java.util.function.BiFunction;
-
 /**
+ *
+ * Playable story of the game
+ *
  * Created by ugur on 25.06.2016.
  */
 public class Story {

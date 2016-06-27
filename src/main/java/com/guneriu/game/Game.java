@@ -1,11 +1,12 @@
 package com.guneriu.game;
 
+import com.guneriu.game.service.GameService;
 import com.guneriu.game.util.io.*;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
 import com.guneriu.game.model.*;
-import com.guneriu.game.util.provider.AreaProvider;
-import com.guneriu.game.util.provider.WeaponProvider;
+import com.guneriu.game.service.AreaService;
+import com.guneriu.game.service.WeaponService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,7 +20,7 @@ public class Game {
 
     public static void main(String[] args) {
 
-        GameContentLoader.loadGameContent();
+        GameContentService.loadGameContent();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -44,18 +45,18 @@ public class Game {
             }
         }
 
-        GameEngine gameEngine = new GameEngine(scanner, hero);
+        GameService gameService = new GameService(scanner, hero);
 
-        gameEngine.doTasks();
+        gameService.executeStories();
     }
 
     private static Hero createHero(Scanner scanner) {
         logger.write("what is your name warrior");
         Hero hero = new Hero(scanner.next());
-        hero.setCurrentArea(AreaProvider.get("1"));
+        hero.setCurrentArea(AreaService.get("1"));
         logger.write("choose yourself a weapon");
-        WeaponProvider.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
-        hero.setWeapon(WeaponProvider.get(scanner.next()));
+        WeaponService.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
+        hero.setWeapon(WeaponService.get(scanner.next()));
         return hero;
     }
 

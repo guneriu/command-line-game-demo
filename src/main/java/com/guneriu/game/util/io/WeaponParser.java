@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parse List of String and creates {@code Order} and {@code Customer} lists
+ * Parse List of String and creates {@link Weapon} lists
+ *
+ * Created by ugur on 25.06.2016.
  */
 public class WeaponParser implements Parser<Weapon> {
     private List<Weapon> weaponList = new ArrayList<>();
@@ -22,7 +24,7 @@ public class WeaponParser implements Parser<Weapon> {
     }
 
     /**
-     * uses {@code List<String>} and parses {@code Customer} and {@code Order} objects
+     * uses {@link List<String>} and parses {@link Weapon} objects
      */
     @Override
     public void parseContent(List<String> lines) {

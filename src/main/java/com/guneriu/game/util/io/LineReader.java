@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 
  * Reader to read file
  *
+ * Created by ugur on 25.06.2016.
  */
 public class LineReader implements ContentReader {
 
 	private String fileName;
 
 	/**
-	 * creates <code>LineReader</code> to read file with limiting capability
+	 * creates {@link LineReader} to read file
 	 * 
 	 * @param fileName file to read
 	 *

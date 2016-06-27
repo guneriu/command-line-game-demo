@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * ContentReader for reading data from source
  *
+ * Created by ugur on 25.06.2016.
  */
 public interface ContentReader {
 	

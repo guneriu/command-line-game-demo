@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Area class which represent a playable area in game context
+ *
  * Created by ugur on 24.06.2016.
  */
 public class Area implements Description {
@@ -50,6 +52,12 @@ public class Area implements Description {
         this.storyList.add(story);
     }
 
+    /**
+     * connects two areas with the given direction and opposite
+     *
+     * @param linkedArea area to connect
+     * @param direction direction to the area
+     */
     public void connect(Area linkedArea, Direction direction) {
         this.getLinkedAreas().put(direction, linkedArea);
         linkedArea.getLinkedAreas().put(direction.getOpposite(), this);

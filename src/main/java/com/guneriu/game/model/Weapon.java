@@ -1,6 +1,8 @@
 package com.guneriu.game.model;
 
 /**
+ * Weapons can be usable for fight
+ *
  * Created by ugur on 26.06.2016.
  */
 public class Weapon implements Description {
