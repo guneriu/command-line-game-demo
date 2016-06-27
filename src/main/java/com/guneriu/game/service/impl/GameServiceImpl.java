@@ -11,7 +11,6 @@ import com.guneriu.game.util.log.LoggerFactory;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Scanner;
 
 /**
  *
@@ -23,9 +22,11 @@ public class GameServiceImpl implements GameService {
 
     private static Logger logger = LoggerFactory.getLogger();
 
-    private final Scanner scanner;
-
     private Hero hero;
+
+    private final InputService inputService;
+
+    private final ExitService exitService;
 
     private final GameContentService gameContentService;
 
@@ -35,8 +36,9 @@ public class GameServiceImpl implements GameService {
 
     private AreaService areaService;
 
-    public GameServiceImpl(Scanner scanner, GameContentService gameContentService, StoryService storyService, WeaponService weaponService, AreaService areaService) {
-        this.scanner = scanner;
+    public GameServiceImpl(InputService inputService, ExitService exitService, GameContentService gameContentService, StoryService storyService, WeaponService weaponService, AreaService areaService) {
+        this.inputService = inputService;
+        this.exitService = exitService;
         this.gameContentService = gameContentService;
         this.storyService = storyService;
         this.weaponService = weaponService;
@@ -52,7 +54,7 @@ public class GameServiceImpl implements GameService {
             if (s.hasEnemy()) {
                 hero.fight(s.getEnemy());
             }
-            s.setCompleted();
+            storyService.setCompleted(s);
             hero.experience(s.getExperience());
             logger.write("You gained " + s.getExperience() + " experience, complete 100 to increase level");
 
@@ -78,7 +80,7 @@ public class GameServiceImpl implements GameService {
         logger.write("Where would you like to go");
         logger.write(hero.getCurrentArea().getDescription());
 
-        String nextDirection = scanner.next();
+        String nextDirection = inputService.nextLine();
 
         Optional<Direction> direction = Direction.fromName(nextDirection);
 
@@ -109,7 +111,7 @@ public class GameServiceImpl implements GameService {
         logger.write("(New Game)");
         logger.write("---- Saved Games ----");
         savedGames.forEach(savedGameName -> logger.write("(" + savedGameName + ")"));
-        String choice = scanner.nextLine();
+        String choice = inputService.nextLine();
         if (choice.equalsIgnoreCase("New Game")) {
             hero = createHero();
         } else {
@@ -131,7 +133,7 @@ public class GameServiceImpl implements GameService {
         logger.write("(3) Continue to stories");
         logger.write("(4) Exit Game");
 
-        String choice = scanner.next();
+        String choice = inputService.next();
 
         switch (choice) {
             case "1": showStats(); break;
@@ -152,7 +154,7 @@ public class GameServiceImpl implements GameService {
     private void setupWeapon(Hero hero) {
         logger.write("choose yourself a weapon");
         weaponService.getByLevel(hero.getLevel()).forEach(weapon -> logger.write(weapon.getDescription()));
-        Optional<Weapon> weapon = weaponService.get(scanner.next());
+        Optional<Weapon> weapon = weaponService.get(inputService.next());
         if (weapon.isPresent()) {
             hero.setWeapon(weapon.get());
         } else {
@@ -162,7 +164,7 @@ public class GameServiceImpl implements GameService {
 
     private Hero setupName() {
         logger.write("what is your name warrior");
-        return new Hero(scanner.next());
+        return new Hero(inputService.nextLine());
     }
 
     private void showInventory() {
@@ -178,20 +180,20 @@ public class GameServiceImpl implements GameService {
 
     private void exit() {
         logger.write("Are you sure the exit the game yes/no?");
-        String next = scanner.next();
+        String next = inputService.next();
         if (!next.equalsIgnoreCase("yes")) {
             showMenu();
         }
 
         saveGame();
-        System.exit(0);
+        exitService.exit();
     }
 
     private void endGame() {
         logger.write("You finished the game");
 
         saveGame();
-        System.exit(0);
+        exitService.exit();
     }
 
     private void saveGame() {

@@ -19,8 +19,6 @@ public class Area implements Description {
 
     private List<Story> storyList = new ArrayList<>();
 
-    private boolean completed;
-
     public Area(String name) {
         this.name = name;
     }

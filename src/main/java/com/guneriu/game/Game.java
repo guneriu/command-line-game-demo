@@ -1,8 +1,6 @@
 package com.guneriu.game;
 
-import com.guneriu.game.service.AreaService;
-import com.guneriu.game.service.StoryService;
-import com.guneriu.game.service.WeaponService;
+import com.guneriu.game.service.*;
 import com.guneriu.game.service.impl.*;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
@@ -19,10 +17,11 @@ public class Game {
         WeaponService weaponService = new WeaponServiceImpl();
         StoryService storyService = new StoryServiceImpl();
         AreaService areaService = new AreaServiceImpl();
-        GameContentServiceImpl gameContentService = new GameContentServiceImpl(storyService, weaponService, areaService);
+        InputService inputService = new InputServiceImpl(new Scanner(System.in));
+        ExitService exitService = new ExitServiceImpl();
+        GameContentServiceImpl gameContentService = new GameContentServiceImpl(storyService, weaponService, areaService, exitService);
 
-        Scanner scanner = new Scanner(System.in);
-        GameServiceImpl gameService = new GameServiceImpl(scanner, gameContentService, storyService, weaponService, areaService);
+        GameServiceImpl gameService = new GameServiceImpl(inputService, exitService, gameContentService, storyService, weaponService, areaService);
         gameService.startGame();
 
     }

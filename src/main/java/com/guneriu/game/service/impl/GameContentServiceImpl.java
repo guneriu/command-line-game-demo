@@ -5,10 +5,7 @@ import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
 import com.guneriu.game.model.Weapon;
-import com.guneriu.game.service.AreaService;
-import com.guneriu.game.service.GameContentService;
-import com.guneriu.game.service.StoryService;
-import com.guneriu.game.service.WeaponService;
+import com.guneriu.game.service.*;
 import com.guneriu.game.util.io.*;
 import com.guneriu.game.util.log.Logger;
 import com.guneriu.game.util.log.LoggerFactory;
@@ -47,10 +44,13 @@ public class GameContentServiceImpl implements GameContentService {
 
     private final AreaService areaService;
 
-    public GameContentServiceImpl(StoryService storyService, WeaponService weaponService, AreaService areaService) {
+    private final ExitService exitService;
+
+    public GameContentServiceImpl(StoryService storyService, WeaponService weaponService, AreaService areaService, ExitService exitService) {
         this.storyService = storyService;
         this.weaponService = weaponService;
         this.areaService = areaService;
+        this.exitService = exitService;
     }
 
     @Override
@@ -75,10 +75,10 @@ public class GameContentServiceImpl implements GameContentService {
 
             while (reader.ready()) {
                 String[] storyData = reader.readLine().split("#");
-                Story story = storyService.get(storyData[0]);
+                Story story = storyService.get(storyData[0]).get();
                 Boolean completed = Boolean.valueOf(storyData[1]);
                 if (completed) {
-                    story.setCompleted();
+                    storyService.setCompleted(story);
                 }
 
             }
@@ -110,13 +110,13 @@ public class GameContentServiceImpl implements GameContentService {
                         bufferedWriter.newLine();
                     } catch (IOException e) {
                         logger.write("could not save the game");
-                        System.exit(-1);
+                        exitService.exit();
                     }
                 });
             }
         } catch (Exception e) {
             logger.write("could not save the game");
-            System.exit(-1);
+            exitService.exit();
         }
 
     }
@@ -138,7 +138,7 @@ public class GameContentServiceImpl implements GameContentService {
 
         } catch (IOException e) {
            logger.write("Could not add game content");
-            System.exit(-1);
+            exitService.exit();
         }
     }
 }

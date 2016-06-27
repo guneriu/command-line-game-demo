@@ -41,7 +41,7 @@ public class AreaParser implements Parser<Area> {
             Area area = getOrCreate(areaMap, areaData[1]);
             area.setId(areaData[0]);
 
-            Stream.of(areaData[2].split(",")).forEachOrdered(storyId -> area.addStory(storyService.get(storyId)));
+            Stream.of(areaData[2].split(",")).forEachOrdered(storyId -> area.addStory(storyService.get(storyId).get()));
 
             if (areaData.length > 3) {
                 for (int i = 3; i < areaData.length; i+=2) {

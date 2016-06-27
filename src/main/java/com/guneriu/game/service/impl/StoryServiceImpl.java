@@ -5,6 +5,7 @@ import com.guneriu.game.service.StoryService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service class for accessing {@link Story} objects
@@ -18,12 +19,11 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public void add(List<Story> stories) {
         storyList.addAll(stories);
-
     }
 
     @Override
-    public Story get(String id) {
-        return storyList.stream().filter(story -> story.getId().equals(id)).findFirst().get();
+    public Optional<Story> get(String id) {
+        return storyList.stream().filter(story -> story.getId().equals(id)).findFirst();
     }
 
     @Override
@@ -36,5 +36,12 @@ public class StoryServiceImpl implements StoryService {
         return this.getAll().stream().allMatch(Story::isCompleted);
     }
 
+    @Override
+    public void setCompleted(Story story) {
+        Optional<Story> storyOptional = get(story.getId());
+        if (storyOptional.isPresent()) {
+            storyOptional.get().setCompleted();
+        }
+    }
 
 }
