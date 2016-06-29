@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public class StoryServiceImpl implements StoryService {
 
-    private static List<Story> storyList = new ArrayList<>();
+    private List<Story> storyList = new ArrayList<>();
 
     @Override
     public void add(List<Story> stories) {

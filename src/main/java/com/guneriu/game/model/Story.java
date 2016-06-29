@@ -10,7 +10,7 @@ public class Story {
 
     private final String id;
 
-    private final String desc;
+    private final String description;
 
     private boolean completed;
 
@@ -18,17 +18,17 @@ public class Story {
 
     private Integer experience;
 
-    public Story(String id, String desc) {
+    public Story(String id, String description) {
         this.id = id;
-        this.desc = desc;
+        this.description = description;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
     public Hero getEnemy() {

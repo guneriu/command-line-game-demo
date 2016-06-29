@@ -2,8 +2,6 @@ package com.guneriu.game;
 
 import com.guneriu.game.service.*;
 import com.guneriu.game.service.impl.*;
-import com.guneriu.game.util.log.Logger;
-import com.guneriu.game.util.log.LoggerFactory;
 
 import java.util.Scanner;
 

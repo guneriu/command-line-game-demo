@@ -86,38 +86,8 @@ public class Hero implements Description {
         }
     }
 
-    private void damage(Integer damage) {
+    public void damage(Integer damage) {
         this.health = damage > health ? 0 : health - damage;
-    }
-
-    public void fight(Hero enemy) {
-        logger.write("You are fighting with " + enemy.getDescription());
-        attack(enemy);
-    }
-
-    private void attack(Hero enemy) {
-        logger.write("You used your " + this.weapon.getName());
-        logger.write("Damage given to enemy: " + this.weapon.getDamage());
-        enemy.damage(this.weapon.getDamage());
-        logger.write("Your health: " + this.getHealth() + " Enemy health: " + enemy.getHealth());
-        if (enemy.isDead()) {
-            logger.write("You killed the enemy");
-            return;
-        }
-
-        logger.write("Enemy attacked with: " + enemy.getWeapon().getName());
-        logger.write("Enemy give damage to you: " + enemy.getWeapon().getDamage());
-        this.damage(enemy.getWeapon().getDamage());
-        logger.write("Your health: " + this.getHealth() + " Enemy health: " + enemy.getHealth());
-
-        if (this.isDead()) {
-            logger.write("Sorry, enemy killed you");
-            return;
-        }
-
-        if (this.isAlive() && enemy.isAlive()) {
-            attack(enemy);
-        }
     }
 
     @Override

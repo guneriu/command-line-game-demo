@@ -1,6 +1,7 @@
 package com.guneriu.game.service.impl;
 
 import com.guneriu.game.model.Area;
+import com.guneriu.game.model.Direction;
 import com.guneriu.game.service.AreaService;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Optional;
  */
 public class AreaServiceImpl implements AreaService {
 
-    private static List<Area> areaList = new ArrayList<>();
+    private List<Area> areaList = new ArrayList<>();
 
 
     @Override
@@ -25,5 +26,18 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public Optional<Area> get(String id) {
         return areaList.stream().filter(area -> area.getId().equals(id)).findFirst();
+    }
+
+    /**
+     * connects two areas with the given direction and opposite
+     *
+     * @param area first area to connect
+     * @param linkedArea second area to connect to first area
+     * @param direction direction to the area
+     */
+    @Override
+    public void connect(Area area, Area linkedArea, Direction direction) {
+        area.getLinkedAreas().put(direction, linkedArea);
+        linkedArea.getLinkedAreas().put(direction.getOpposite(), area);
     }
 }

@@ -1,6 +1,5 @@
 package com.guneriu.game.service.impl;
 
-import com.guneriu.game.Game;
 import com.guneriu.game.model.Area;
 import com.guneriu.game.model.Hero;
 import com.guneriu.game.model.Story;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class GameContentServiceImpl implements GameContentService {
 
     private static final String DELIMITER = "#";
-    public static final String CONTENT_FOLDER = "/content/assassins_creed/";
+    private static final String CONTENT_FOLDER = "content/assassins_creed/";
     private static final String SAVE_DIRECTORY = System.getProperty("user.home") + "/games/";
     private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
     private static Logger logger = LoggerFactory.getLogger();
@@ -124,16 +123,16 @@ public class GameContentServiceImpl implements GameContentService {
     @Override
     public void loadGameContent() {
         try {
-            ContentReader reader = new LineReader(Game.class.getResource(CONTENT_FOLDER + "weapons.txt").getFile());
+            ContentReader reader = new LineReader(getClass().getClassLoader().getResourceAsStream(CONTENT_FOLDER + "weapons.txt"));
             Parser<Weapon> parser = new WeaponParser(DELIMITER);
             weaponService.add(parser.parseContent(reader.read()));
 
-            reader = new LineReader(Game.class.getResource(CONTENT_FOLDER + "stories.txt").getFile());
+            reader = new LineReader(getClass().getClassLoader().getResourceAsStream(CONTENT_FOLDER + "stories.txt"));
             Parser<Story> storyParser = new StoryParser(weaponService, DELIMITER);
             storyService.add(storyParser.parseContent(reader.read()));
 
-            reader = new LineReader(Game.class.getResource(CONTENT_FOLDER + "areas.txt").getFile());
-            Parser<Area> areaParser = new AreaParser(storyService, DELIMITER);
+            reader = new LineReader(getClass().getClassLoader().getResourceAsStream(CONTENT_FOLDER + "areas.txt"));
+            Parser<Area> areaParser = new AreaParser(storyService, areaService, DELIMITER);
             areaService.add(areaParser.parseContent(reader.read()));
 
         } catch (IOException e) {

@@ -50,9 +50,9 @@ public class GameServiceImpl implements GameService {
         Objects.requireNonNull(hero, "Please call startGame to setup hero");
         Area currentArea = hero.getCurrentArea();
         currentArea.getStoryList().stream().filter(story -> !story.isCompleted()).forEach(s -> {
-            logger.write(s.getDesc());
+            logger.write(s.getDescription());
             if (s.hasEnemy()) {
-                hero.fight(s.getEnemy());
+                fight(s.getEnemy());
             }
             storyService.setCompleted(s);
             hero.experience(s.getExperience());
@@ -80,9 +80,7 @@ public class GameServiceImpl implements GameService {
         logger.write("Where would you like to go");
         logger.write(hero.getCurrentArea().getDescription());
 
-        String nextDirection = inputService.nextLine();
-
-        Optional<Direction> direction = Direction.fromName(nextDirection);
+        Optional<Direction> direction = Direction.fromName(inputService.next());
 
         if (!direction.isPresent()) {
             explore();
@@ -107,24 +105,6 @@ public class GameServiceImpl implements GameService {
         this.executeStories();
     }
 
-    private Hero showGameMenu(List<String> savedGames) {
-        logger.write("(New Game)");
-        logger.write("---- Saved Games ----");
-        savedGames.forEach(savedGameName -> logger.write("(" + savedGameName + ")"));
-        String choice = inputService.nextLine();
-        if (choice.equalsIgnoreCase("New Game")) {
-            hero = createHero();
-        } else {
-            Optional<Hero> optionalHero = gameContentService.getSavedGame(choice);
-            if (optionalHero.isPresent()) {
-                hero = optionalHero.get();
-            }
-            hero = showGameMenu(savedGames);
-        }
-
-        return hero;
-    }
-
     @Override
     public void showMenu() {
         Objects.requireNonNull(hero, "Please call startGame to setup hero");
@@ -142,6 +122,25 @@ public class GameServiceImpl implements GameService {
             case "4": exit(); break;
             default: logger.write("What?"); showMenu();
         }
+    }
+
+    private Hero showGameMenu(List<String> savedGames) {
+        logger.write("(New Game)");
+        logger.write("---- Saved Games ----");
+        savedGames.forEach(savedGameName -> logger.write("(" + savedGameName + ")"));
+        String choice = inputService.nextLine();
+        if (choice.equalsIgnoreCase("New Game")) {
+            hero = createHero();
+        } else {
+            Optional<Hero> optionalHero = gameContentService.getSavedGame(choice);
+            if (optionalHero.isPresent()) {
+                hero = optionalHero.get();
+            } else {
+                hero = showGameMenu(savedGames);
+            }
+        }
+
+        return hero;
     }
 
     private Hero createHero() {
@@ -176,6 +175,36 @@ public class GameServiceImpl implements GameService {
         logger.write("health: " + hero.getHealth() + " experience bar: " + hero.getExperience()
                 + " level: " + hero.getLevel() + " weapon: " + hero.getWeapon().getDescription());
         showMenu();
+    }
+
+    public void fight(Hero enemy) {
+        logger.write("You are fighting with " + enemy.getDescription());
+        attack(enemy);
+    }
+
+    private void attack(Hero enemy) {
+        logger.write("You used your " + hero.getWeapon().getName());
+        logger.write("Damage given to enemy: " + hero.getWeapon().getDamage());
+        enemy.damage(hero.getWeapon().getDamage());
+        logger.write("Your health: " + hero.getHealth() + " Enemy health: " + enemy.getHealth());
+        if (enemy.isDead()) {
+            logger.write("You killed the enemy");
+            return;
+        }
+
+        logger.write("Enemy attacked with: " + enemy.getWeapon().getName());
+        logger.write("Enemy give damage to you: " + enemy.getWeapon().getDamage());
+        hero.damage(enemy.getWeapon().getDamage());
+        logger.write("Your health: " + hero.getHealth() + " Enemy health: " + enemy.getHealth());
+
+        if (hero.isDead()) {
+            logger.write("Sorry, enemy killed you");
+            return;
+        }
+
+        if (hero.isAlive() && enemy.isAlive()) {
+            attack(enemy);
+        }
     }
 
     private void exit() {

@@ -22,6 +22,6 @@ public class InputServiceImpl implements InputService {
 
     @Override
     public String nextLine() {
-        return scanner.next();
+        return scanner.nextLine();
     }
 }

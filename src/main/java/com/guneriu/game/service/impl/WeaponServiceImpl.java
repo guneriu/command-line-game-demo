@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class WeaponServiceImpl implements WeaponService {
 
-    private static List<Weapon> weaponList = new ArrayList<>();
+    private List<Weapon> weaponList = new ArrayList<>();
 
     @Override
     public void add(List<Weapon> weapons) {
